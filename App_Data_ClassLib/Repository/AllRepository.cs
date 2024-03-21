@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace App_Data_ClassLib.Repository
 {
-    internal class AllRepository<G> : IAllRepository<G> where G : class
+    public class AllRepository<G> : IAllRepository<G> where G : class
     {
         SD18302_NET104Context context;
         DbSet<G> dbset; // CRUD trên DBset vì nó đại diện cho bảng
