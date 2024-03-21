@@ -50,5 +50,17 @@ namespace App_MVC.Controllers
             _repo.UpdateObj(user);
             return RedirectToAction("Index");
         }
+        // Xóa
+        public IActionResult Delete(Guid id) {
+            _repo.DeleteObj(id);
+            return RedirectToAction("Index");
+        }
+        // Thông tin Details
+        public IActionResult Details(Guid id)
+        {
+            var getUser = _repo.GetByID(id);
+            return View(getUser);
+        }
+
     }
 }
