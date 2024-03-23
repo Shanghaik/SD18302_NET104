@@ -62,5 +62,23 @@ namespace App_MVC.Controllers
             return View(getUser);
         }
 
+        public IActionResult Login() // Action này return về View để mở View cho phép nhập thông tin đăng nhập
+        {
+            return View(); 
+        }
+        [HttpPost]
+        public IActionResult Login(string username, string password) // Action này thực hiện đăng nhập
+        {
+            var user = _repo.GetAll().FirstOrDefault(p=>p.Username == username && p.Password == password);
+            if (user != null)
+            {
+                //return Content("Đăng nhập oke");
+                // Dùng TempData để lưu trữ dữ liệu đăng nhập tạm thời 
+                TempData["login"] = username;
+                return RedirectToAction("Index", "Home");
+            }
+            else return Content("Đăng nhập thất bại");
+        }
+
     }
 }

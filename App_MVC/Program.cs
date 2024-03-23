@@ -1,4 +1,4 @@
-namespace App_MVC
+﻿namespace App_MVC
 {
     public class Program
     {
@@ -28,7 +28,7 @@ namespace App_MVC
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=User}/{action=Login}");// Set route mặc định
 
             app.Run();
         }
