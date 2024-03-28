@@ -24,4 +24,8 @@
     <ProjectReference Include="..\App_Data_ClassLib\App_Data_ClassLib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\img\" />
+  </ItemGroup>
+
 </Project>

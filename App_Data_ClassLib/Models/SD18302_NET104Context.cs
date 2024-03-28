@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -18,6 +19,8 @@ namespace App_Data_ClassLib.Models
         // DbSet để trỏ tới mỗi bảng
         public DbSet<HoaDon> Hoadons { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<SanPham> SanPhams { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
