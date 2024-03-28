@@ -19,10 +19,24 @@ namespace App_MVC.Controllers
             _repo = new AllRepository<User>(_users, _context);
         }
         // Lấy ra tất cả danh sách Users
-        public IActionResult Index()
+        public IActionResult Index(string name) // tham số name để tìm kiếm
         {
             var userData = _repo.GetAll();
-            return View(userData);
+            if (string.IsNullOrEmpty(name))
+            {
+                return View(userData);
+            }
+            else
+            {
+                var searchData = _repo.GetAll().Where(x => x.Name.Contains(name)).ToList(); // Tìm theo tên           
+                ViewData["count"] = searchData.Count;
+                ViewBag.Count = searchData.Count;
+                if (searchData.Count == 0) // Nếu ko tìm thấy 
+                {
+                    return View(userData);
+                }
+                else return View(searchData); // có tìm thấy
+            }
         }
         // Thêm data
         public IActionResult Create() // Action để mở form điền thông tin user
@@ -33,7 +47,7 @@ namespace App_MVC.Controllers
         [HttpPost]
         public IActionResult Create(User user)
         {
-            user.ID = Guid.NewGuid();   
+            user.ID = Guid.NewGuid();
             _repo.CreateObj(user);
             return RedirectToAction("Index");
         }
@@ -51,7 +65,8 @@ namespace App_MVC.Controllers
             return RedirectToAction("Index");
         }
         // Xóa
-        public IActionResult Delete(Guid id) {
+        public IActionResult Delete(Guid id)
+        {
             _repo.DeleteObj(id);
             return RedirectToAction("Index");
         }
@@ -64,12 +79,12 @@ namespace App_MVC.Controllers
 
         public IActionResult Login() // Action này return về View để mở View cho phép nhập thông tin đăng nhập
         {
-            return View(); 
+            return View();
         }
         [HttpPost]
         public IActionResult Login(string username, string password) // Action này thực hiện đăng nhập
         {
-            var user = _repo.GetAll().FirstOrDefault(p=>p.Username == username && p.Password == password);
+            var user = _repo.GetAll().FirstOrDefault(p => p.Username == username && p.Password == password);
             if (user != null)
             {
                 //return Content("Đăng nhập oke");
