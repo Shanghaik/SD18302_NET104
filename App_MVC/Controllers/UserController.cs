@@ -2,6 +2,7 @@
 using App_Data_ClassLib.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace App_MVC.Controllers
 {
@@ -21,6 +22,14 @@ namespace App_MVC.Controllers
         // Lấy ra tất cả danh sách Users
         public IActionResult Index(string name) // tham số name để tìm kiếm
         {
+            var sessionData = HttpContext.Session.GetString("user");
+            if(sessionData == null)
+            {
+                ViewData["message"] = "Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn";
+            }else
+            {
+                ViewData["message"] = $"Chào mừng {sessionData} đến với unfinished square integer";
+            }
             var userData = _repo.GetAll();
             if (string.IsNullOrEmpty(name))
             {
@@ -67,8 +76,24 @@ namespace App_MVC.Controllers
         // Xóa
         public IActionResult Delete(Guid id)
         {
+            // Lấy ra đối tượng cần bị xóa
+            var deleteUser = _repo.GetByID(id);
+            var jsonData = JsonConvert.SerializeObject(deleteUser); //Ép kiểu sang Json
+            HttpContext.Session.SetString("deleted", jsonData);// Cho dữ liệu vào session
             _repo.DeleteObj(id);
             return RedirectToAction("Index");
+        }
+        public IActionResult RollBack()
+        {
+            if (HttpContext.Session.Keys.Contains("deleted"))
+            {
+                var jsonData = HttpContext.Session.GetString("deleted");
+                // Tạo mới đối tượng có dữ liệu y hệt như dữ liệu cũ
+                var deletedUser = JsonConvert.DeserializeObject<User>(jsonData);
+                _repo.CreateObj(deletedUser);  // Add lại vào trong Db
+                return RedirectToAction("Index"); // về trang index
+            }
+            else return Content("It's too late to apologize");
         }
         // Thông tin Details
         public IActionResult Details(Guid id)
@@ -90,6 +115,8 @@ namespace App_MVC.Controllers
                 //return Content("Đăng nhập oke");
                 // Dùng TempData để lưu trữ dữ liệu đăng nhập tạm thời 
                 TempData["login"] = username;
+                // Lữu trữ thông tin đăng nhập vào Session
+                HttpContext.Session.SetString("user", username);
                 return RedirectToAction("Index", "Home");
             }
             else return Content("Đăng nhập thất bại");

@@ -2,15 +2,18 @@
 
 @{
     ViewData["Title"] = "Index";
+    var message = ViewData["message"];
 }
 
 <h1>Index</h1>
+<h5>@message</h5>
 <form action="/User/Index" method="get">
     <input type="text" id="searchInput" name="name" placeholder="Nhập chuỗi tìm kiếm...">
     <input type="submit" value="Search">
 </form>
 <p>
     <a asp-action="Create">Create New</a>
+    <a asp-action="RollBack">Troll Jack</a>
 </p>
 <table class="table">
     <thead>
